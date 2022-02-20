@@ -16,7 +16,6 @@ p_num=p1_p2p=p2_p2p=0;
 p2p[0]=num;
 }
 
-
 void add(int i)  //add function
 {
 num[p_num]=i;
@@ -29,7 +28,6 @@ newArray();
 }
 
 }
-
 
 void newArray() //expanding array
 {
@@ -90,30 +88,12 @@ cout<<"copy constructer"<<endl;
 
 Collection & operator=(Collection &v) //operator = function(copying array)
 {
-/*if(this->p2_p2p!=0 || this->p_num!=0 )
+int i=0;
+while(i<v.getSize())
 {
-*this+=v;
-return *this;
+this->add(v[i]);
+i++;
 }
-*/
-int size;
-size=v.getSize();
-int i,j,k;
-this->p_num=v.p_num;
-this->p1_p2p=v.p1_p2p;
-this->p2_p2p=v.p2_p2p;
-
-this->p2p=new int*[this->p2_p2p+1];
-for(i=0; i<=p2_p2p; i++)
-{
-this->num=new int[10];
-for(j=0; j<10&& size; size--,j++)
-{
-this->num[j]=v.p2p[i][j];
-}
-this->p2p[i]=this->num;
-}
-
 return *this;
 }
 
@@ -125,7 +105,6 @@ while(i<v.getSize())
 this->add(v[i]);
 i++;
 }
-
 return *this;
 }
 
@@ -139,14 +118,10 @@ Collection c1,c2;
 c1.add(100);
 c1.add(105);
 
-
-
 for(int j=0; j<c1.getSize(); j++)
 {
 cout<<c1[j]<<endl;
 }
-
-
 c2.add(4030);
 c2=c1;
 c2.add(4031);
@@ -159,11 +134,6 @@ for(int j=0; j<c2.getSize(); j++)
 cout<<c2[j]<<endl;
 }
 
-cout<<"c1"<<endl;
-for(int j=0; j<c1.getSize(); j++)
-{
-cout<<c1[j]<<endl;
-}
 
 cout<<"Program ends"<<endl;
 return 0;
