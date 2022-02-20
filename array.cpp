@@ -1,29 +1,29 @@
 #include<iostream>
 using namespace std;
-
+template<class T>
 class Collection
 {
 private:
-int *num,p_num;
-int **p2p,**cp2p,p1_p2p,p2_p2p;
+int p1_p2p,p2_p2p,p_data;
+T *data,**p2p,**cp2p;
 public:
 
 Collection()  //default constructor
 {
-num=new int[10];
-p2p=new int*[10];
-p_num=p1_p2p=p2_p2p=0;
-p2p[0]=num;
+data=new T[10];
+p2p=new T*[10];
+p_data=p1_p2p=p2_p2p=0;
+p2p[0]=data;
 }
 
 void add(int i)  //add function
 {
-num[p_num]=i;
-p_num++;
-if(p_num==10)
+data[p_data]=i;
+p_data++;
+if(p_data==10)
 {
-  //expand num array
-p_num=0;
+  //expand data array
+p_data=0;
 newArray();
 }
 
@@ -31,7 +31,7 @@ newArray();
 
 void newArray() //expanding array
 {
-num=new int[10];
+data=new T[10];
 p1_p2p++;
 p2_p2p++;
 if(p1_p2p==10)
@@ -39,26 +39,27 @@ if(p1_p2p==10)
 p1_p2p==0;
 newP2P();
 }
-p2p[p2_p2p]=num;
+p2p[p2_p2p]=data;
 }
 
 void newP2P()  //expanding p2p array
 {
-cp2p=new int*[p2_p2p];
-for(int i=0; i<p2_p2p; i++)
+cp2p=new T*[p2_p2p];
+int i;
+for(i=0; i<p2_p2p; i++)
 {
 cp2p[i]=p2p[i];
 }
 delete []p2p;
-p2p=new int*[p2_p2p+10];
-for(int i=0; i<p2_p2p; i++)
+p2p=new T*[p2_p2p+10];
+for(i=0; i<p2_p2p; i++)
 {
 p2p[i]=cp2p[i];
 }
 delete []cp2p;
 }
 
-int operator[](int j) //geting jth element of arrray
+T operator[](int j) //geting jth element of arrray
 {
 for(int i=0,f=0; i<=p2_p2p; i++)
 {
@@ -71,13 +72,13 @@ if(f==j) return *(p2p[i]+k);
 
 int getSize()
 {
-return p2_p2p*10+p_num;
+return p2_p2p*10+p_data;
 }
 
 void numberOfPointers()
 {
 cout<<"number of p2p array declared (in each p2p) : "<<p2_p2p+1<<endl;
-cout<<"last p2p pointer elemets "<<p_num<<endl;
+cout<<"last p2p pointer elemets "<<p_data<<endl;
 }
 
 Collection(const Collection &v) //copy constructor
@@ -113,27 +114,33 @@ return *this;
 
 int main()
 {
-Collection c1,c2;
+Collection <char> c1,c2;
 
-c1.add(100);
-c1.add(105);
+c1.add('a');
+c1.add('b');
 
 for(int j=0; j<c1.getSize(); j++)
 {
 cout<<c1[j]<<endl;
 }
-c2.add(4030);
+c2.add('c');
 c2=c1;
-c2.add(4031);
+c2.add('d');
 
-c1.add(101);
+c1.add('e');
 cout<<"size :"<<c2.getSize()<<endl;
-cout<<"List of numbers c2"<<endl;
+cout<<"List of databers c2"<<endl;
 for(int j=0; j<c2.getSize(); j++)
 {
 cout<<c2[j]<<endl;
 }
 
+
+cout<<"c1 : "<<c1.getSize()<<endl;
+for(int j=0; j<c1.getSize(); j++)
+{
+cout<<c1[j]<<endl;
+}
 
 cout<<"Program ends"<<endl;
 return 0;
