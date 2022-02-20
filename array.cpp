@@ -90,11 +90,12 @@ cout<<"copy constructer"<<endl;
 
 Collection & operator=(Collection &v) //operator = function(copying array)
 {
-if(this->p2_p2p!=0 || this->p_num!=0 )
+/*if(this->p2_p2p!=0 || this->p_num!=0 )
 {
 *this+=v;
 return *this;
 }
+*/
 int size;
 size=v.getSize();
 int i,j,k;
@@ -148,14 +149,20 @@ cout<<c1[j]<<endl;
 
 c2.add(4030);
 c2=c1;
-c2.add(40);
 c2.add(4031);
+
 c1.add(101);
 cout<<"size :"<<c2.getSize()<<endl;
 cout<<"List of numbers c2"<<endl;
 for(int j=0; j<c2.getSize(); j++)
 {
 cout<<c2[j]<<endl;
+}
+
+cout<<"c1"<<endl;
+for(int j=0; j<c1.getSize(); j++)
+{
+cout<<c1[j]<<endl;
 }
 
 cout<<"Program ends"<<endl;
