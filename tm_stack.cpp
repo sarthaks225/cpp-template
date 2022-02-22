@@ -87,7 +87,7 @@ cout<<"copy constructer"<<endl;
 }
 
 
-Collection & operator=(const Collection &v) //operator = function(copying array)
+Collection & operator=(Collection &v) //operator = function(copying array)
 {
 int i=0;
 while(i<v.getSize())
@@ -111,89 +111,54 @@ return *this;
 
 void removeFromTop()
 {
-
 if(p2_p2p==0 && p_data==0) return;
-if(p2_p2p==0)
-{
-cout<<"removing : "<<p2p[p2_p2p][p_data-1];
-p_data--;
-}
-else
-{
 if(p_data==0)
 {
-cout<<"22222 removing"<<(p2p[p2_p2p-1][9]);
 delete [] p2p[p2_p2p--];
-if(p1_p2p>0) p1_p2p--;
+delete (p2p[p2_p2p]+9);
 p_data=9;
 }
 else
 {
-p_data--;
+delete (p2p[p2_p2p]+p_data--);
 }
 
 }
 
 
-
-
-cout<<"***succ"<<endl;
-}
 };
 
-
-
-class Bulb
+template<class T>
+class Stack:public Collection<int>
 {
-char wattage;
+int top;
+Collection collection;
 public:
-void setWattage(char wattage)
+Stack() //default constructor
 {
-this->wattage=wattage;
-}
-char getWattage()
-{
-return wattage;
+top=0;
 }
 
-Bulb(char wattage)
+void push(int j)
 {
-this->wattage=wattage;
+collection.add(j);
+top++;
+}
+
+int pop()
+{
+int i;
+i=collection[top];
+collection.removeFromTop();
+return i;
 }
 
 };
-
-typedef struct model_
-{
-char model;
-}Car;
-
 
 int main()
 {
-Collection <char> c1,c2;
 
-for(int i=0; i<10; i++)
-{
-c1.add(i+'a');
-}
 
-cout<<"c1 : elements "<<c1.getSize()<<endl;
-for(int i=0; i<c1.getSize(); i++)
-{
-cout<<c1[i]<<endl;
-}
 
-while(c1.getSize()!=0)
-{
-c1.removeFromTop();
-cout<<"removed  c1 size : "<<c1.getSize()<<endl;
-for(int i=0; i<c1.getSize(); i++)
-{
-cout<<c1[i]<<"  ";
-}
-cout<<endl;
-}
-cout<<"Program ends"<<endl;
 return 0;
 }
