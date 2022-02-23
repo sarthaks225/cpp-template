@@ -5,13 +5,12 @@
 #define false 0
 #define False 0
 
-
 using namespace std;
 class List
 {
 public:
 virtual void add(int,bool *succ)=0;
-virtual int get(int index, bool *) const=0;
+virtual int get(int index, bool *)const=0;
 virtual int getSize()=0;
 
 virtual void insertAt(int index,int data,bool *)=0;
@@ -26,7 +25,8 @@ class Array:public List
 {
 private: 
 int **pointer;
-int size,capacity;
+int size,capacity,faltu;
+int flagVariable; //for operator + function
 void createRow();
 
 public:
@@ -50,6 +50,8 @@ void clear();
 // operator function
 Array & operator=(const Array &other);
 void operator+=(const Array &other);
+int & operator[](int index);
+Array operator+(const Array &other);
 
 void check()   //checking
 {
@@ -61,6 +63,7 @@ cout<<"size "<<this->getSize()<<endl<<"Capacity "<<this->capacity<<endl;
 //Construtors
 Array::Array() //default constructor
 {
+this->flagVariable=0; //for operator + function
 this->pointer=new int*[10];
 this->pointer[0]=new int[10];
 this->size=0;
@@ -69,6 +72,7 @@ this->capacity=10;
 
 Array::Array(int bufferSize)
 {
+this->flagVariable=0; //for operator + function
 if(bufferSize<=0)
 {
 this->pointer=new int*[10];
@@ -87,6 +91,7 @@ this->capacity=row*10;
 }
 Array::Array(const Array &v)
 {
+this->flagVariable=0; //for operator + function
 bool succ;
 if(v.size==0)
 {
@@ -113,6 +118,8 @@ this->add((v.get(i,&succ)),&succ);
 
 Array:: ~Array() //Destructor
 {
+if(this->flagVariable==0) //flagVariable is used for issues related to a=b+c statement
+{
 int i,row;
 row=this->capacity/10;
 for(i=0; i<row; i++)
@@ -122,6 +129,7 @@ delete []this->pointer[i];
 delete []this->pointer;
 }
 
+}
 
 //Methods
 
@@ -235,8 +243,11 @@ void Array::clear()
 this->size=0;
 }
 
-//operator fucntion
-Array &Array::operator=(const Array &other)
+// operator function
+Array & Array::operator=(const Array &other)
+{
+
+if(this->flagVariable==0) //if operator + function executed flagVariable==1
 {
 this->size=0;
 bool succ;
@@ -245,8 +256,31 @@ for(int i=0; i<other.size; i++)
 this->add(other.get(i,&succ),&succ);
 if(succ==false) break;
 }
+}
+else
+{
+for(int i=0; i<this->size; i++)
+{
+delete []this->pointer[i/10];
+}
+delete []this->pointer;
+this->size=other.size;
+this->capacity=other.capacity;
+this->pointer=other.pointer;
+}
+
 return *this;
 }
+
+Array Array::operator+(const Array &other)
+{
+Array k;
+k.flagVariable=1;
+k=*this;
+k+=other;
+return k;
+}
+
 void Array::operator+=(const Array &other)
 {
 bool succ;
@@ -255,49 +289,37 @@ for(int i=0; i<other.size; i++)
 this->add(other.get(i,&succ),&succ);
 if(succ==false) break;
 }
+
 }
+
+int & Array::operator[](int index)
+{
+if(index>=this->size || index<0) return faltu=0;
+return this->pointer[index/10][index%10];
+}
+
 
 int main()
 {
 bool succ;
 Array a1;
 a1.check();
-cout<<"a1 size  "<<a1.getSize()<<endl;
 cout<<"adding data to a1"<<endl;
 for(int i=0; i<19; i++)
 {
 a1.add(i,&succ);
 }
-cout<<"a1 size  "<<a1.getSize()<<endl;
-cout<<"data of a1"<<endl;
-for(int i=0; i<a1.getSize(); i++)
-{
-cout<<a1.get(i,&succ)<<" ";
-}
-cout<<endl;
-
-
-
-/*
-for(int i=0; i<100; i++)
-{
-a1.insertAt(i+5,i*100,&succ);
-}
-cout<<"data of a1"<<endl;
-for(int i=0; i<a1.getSize(); i++)
-{
-cout<<a1.get(i,&succ)<<" ";
-}
-cout<<endl;
 a1.check();
-*/
+cout<<"data of a1"<<endl;
+for(int i=0; i<a1.getSize(); i++)
+{
+cout<<a1.get(i,&succ)<<" ";
+}
+cout<<endl<<endl;
 
-cout<<"a2 object"<<endl;
-Array a2;
-a2.add(1025,&succ);
-
-cout<<"a2 size  "<<a2.getSize()<<endl;
-
+Array a2,a3;
+a2.add(25,&succ);
+a2.check();
 cout<<"data of a2"<<endl;
 for(int i=0; i<a2.getSize(); i++)
 {
@@ -305,6 +327,24 @@ cout<<a2.get(i,&succ)<<" ";
 }
 cout<<endl;
 
+a3=a2+a1;
+
+a3.check();
+cout<<"data of a3"<<endl;
+for(int i=0; i<a3.getSize(); i++)
+{
+cout<<a3.get(i,&succ)<<" ";
+}
+cout<<endl;
+
+a3.add(10546,&succ);
+a3.check();
+cout<<"data of a3"<<endl;
+for(int i=0; i<a3.getSize(); i++)
+{
+cout<<a3.get(i,&succ)<<" ";
+}
+cout<<endl;
 
 
 cout<<"Program ends"<<endl;
