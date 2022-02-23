@@ -34,6 +34,7 @@ public:
 Array();
 Array(int buffer);
 Array(const Array &v);
+virtual ~Array(); //Destructor
   //Methods
 void add(int ,bool *);
 int get(int index, bool *) const;
@@ -46,6 +47,9 @@ void update(int index,int data,bool *);
 void removeAll();
 void clear();
 
+// operator function
+Array & operator=(const Array &other);
+void operator+=(const Array &other);
 
 void check()   //checking
 {
@@ -54,10 +58,7 @@ cout<<"size "<<this->getSize()<<endl<<"Capacity "<<this->capacity<<endl;
 
 };
 
-
-
-
-
+//Construtors
 Array::Array() //default constructor
 {
 this->pointer=new int*[10];
@@ -66,7 +67,6 @@ this->size=0;
 this->capacity=10;
 }
 
-//Construtors
 Array::Array(int bufferSize)
 {
 if(bufferSize<=0)
@@ -87,7 +87,6 @@ this->capacity=row*10;
 }
 Array::Array(const Array &v)
 {
-cout<<"1111 copy constructor invoked"<<endl;
 bool succ;
 if(v.size==0)
 {
@@ -111,6 +110,18 @@ this->add((v.get(i,&succ)),&succ);
 }
 
 }
+
+Array:: ~Array() //Destructor
+{
+int i,row;
+row=this->capacity/10;
+for(i=0; i<row; i++)
+{
+delete []this->pointer[i];
+}
+delete []this->pointer;
+}
+
 
 //Methods
 
@@ -137,7 +148,6 @@ this->capacity=capacity+10;
 
 }
 
-
 void Array::add(int data,bool *succ)
 {
 if(succ) *succ=false;
@@ -161,26 +171,100 @@ return this->size;
 }
 
 void Array::insertAt(int index,int data,bool *succ)
-{}
+{
+if(succ) *succ=false;
+if(index<0 || index>size) return;
+if(index==size)
+{
+this->add(data,succ);
+}
+else
+{
+int i;
+this->add(this->get(size-1,succ),succ);
+if(*succ==false) return;
+int updateAtIndex=this->size-2;
+for(i=updateAtIndex; i>index; i--)
+{
+this->update(i,this->get(i-1,succ),succ);
+}
+this->update(i,data,succ);
+}
+
+}
+
 int Array::removeAt(int index,bool *succ)
-{}
+{
+int data;
+if(succ) *succ=false;
+if(index<0 || index>=this->size)
+{
+return 0;
+}
+data=this->pointer[index/10][index%10];
+if(index==this->size-1)
+{
+size--;
+}
+else
+{
+for(int i=index; i<size-1; i++)
+{
+this->update(i,this->get(i+1,succ),succ);
+}
+size--;
+}
+if(succ) *succ=true;
+return data;
+}
+
 void Array::update(int index,int data,bool *succ)
-{}
+{
+if(succ) *succ=false;
+if(index<0 || index>=size) return;
+this->pointer[index/10][index%10]=data;
+if(succ) *succ=true;
+}
 
 void Array:: removeAll()
-{}
+{
+this->size=0;
+}
 void Array::clear()
-{}
+{
+this->size=0;
+}
 
+//operator fucntion
+Array &Array::operator=(const Array &other)
+{
+this->size=0;
+bool succ;
+for(int i=0; i<other.size; i++) 
+{
+this->add(other.get(i,&succ),&succ);
+if(succ==false) break;
+}
+return *this;
+}
+void Array::operator+=(const Array &other)
+{
+bool succ;
+for(int i=0; i<other.size; i++)
+{
+this->add(other.get(i,&succ),&succ);
+if(succ==false) break;
+}
+}
 
 int main()
 {
 bool succ;
-Array a1(300);
+Array a1;
 a1.check();
 cout<<"a1 size  "<<a1.getSize()<<endl;
 cout<<"adding data to a1"<<endl;
-for(int i=0; i<251; i++)
+for(int i=0; i<19; i++)
 {
 a1.add(i,&succ);
 }
@@ -191,11 +275,27 @@ for(int i=0; i<a1.getSize(); i++)
 cout<<a1.get(i,&succ)<<" ";
 }
 cout<<endl;
+
+
+
+/*
+for(int i=0; i<100; i++)
+{
+a1.insertAt(i+5,i*100,&succ);
+}
+cout<<"data of a1"<<endl;
+for(int i=0; i<a1.getSize(); i++)
+{
+cout<<a1.get(i,&succ)<<" ";
+}
+cout<<endl;
 a1.check();
+*/
 
-Array a2(a1);
+cout<<"a2 object"<<endl;
+Array a2;
+a2.add(1025,&succ);
 
-a2.check();
 cout<<"a2 size  "<<a2.getSize()<<endl;
 
 cout<<"data of a2"<<endl;
@@ -204,6 +304,7 @@ for(int i=0; i<a2.getSize(); i++)
 cout<<a2.get(i,&succ)<<" ";
 }
 cout<<endl;
+
 
 
 cout<<"Program ends"<<endl;
