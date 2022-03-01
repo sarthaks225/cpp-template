@@ -1,6 +1,6 @@
 #include<iostream>
 #include<time.h>
-
+#include<string.h>
 using namespace std;
 
 class TMDate
@@ -12,8 +12,9 @@ int dayNumber;
 public:
 //..... constructor
 TMDate();
-
+TMDate(const char *);
 //..... functions
+void isValidDate(const char *,int *isValid,int *d,int *m,int *y);
 void toDayNumber();
 void fromDayNumber();
 int isLeapYear(int );
@@ -47,7 +48,85 @@ month=now->tm_mon+1;
 year=now->tm_year+1900;
 this->toDayNumber();
 }
+TMDate::TMDate(const char *dateString)
+{
+int isValid,d,m,y;
+isValidDate(dateString,&isValid,&d,&m,&y);
+if(isValid)
+{
+this->dayOfMonth=d;
+this->month=m;
+this->year=y;
+this->toDayNumber();
+}
+else 
+{
+this->dayOfMonth=0;
+this->month=0;
+this->year=0;
+this->dayNumber=0;
+}
+
+}
+// done
+
 //... functions
+
+void TMDate::isValidDate(const char *x,int *isValid,int *d,int *m,int *y)
+{
+*isValid=0,*d=0,*m=0,*y=0;
+if(x==NULL || strlen(x)<8 || strlen(x)>10) return;
+char seprator,c;
+int i,date=0,month=0,year=0;
+int sepIndex1;
+i=0;
+while(1)
+{
+c=x[i];
+i++;
+if(c>='0' && c<='9') date=date*10+c-'0';
+else if((i==2 || i==3) && (c=='/' || c=='-'))
+{
+sepIndex1=i-1;
+seprator=c;
+break;
+}
+else return;
+}
+while(1)
+{
+c=x[i];
+i++;
+if(c>='0' && c<='9') month=month*10+c-'0';
+else if((i-1==sepIndex1+2 || i-1==sepIndex1+3) && seprator==c)
+{
+break;
+}
+else return;
+}
+int count=0;
+while(1)
+{
+c=x[i];
+i++;
+if(c>='0' && c<='9')
+{
+year=year*10+c-'0';
+count++;
+}
+else if(c=='\0') break;
+else return;
+}
+if(count!=4 || year<1901) return;
+if(month>12 || month<=0) return;
+int mth[12]={31,28,31,30,31,30,31,31,30,31,30,31};
+if(isLeapYear(year)) mth[1]=29;
+if(mth[month-1]<date || date<=0 ) return;
+*d=date;
+*m=month;
+*y=year;
+*isValid=1;
+}
 
 void TMDate::toDayNumber()
 {
@@ -89,6 +168,8 @@ if(daysInYear>x) break;
 x-=daysInYear;
 y++;
 }
+
+if(isLeapYear(y)) mth[1]=29;  // done
 
 m=0;
 while(1)
@@ -204,34 +285,13 @@ return cout;
 
 int main()
 {
-TMDate date1;
+TMDate date1("2/08/2002");
 cout<<date1;
-date1.toDayNumber();
+//date1.toDayNumber();
 
 cout<<"....."<<endl;
 date1+=5;
 cout<<"date 1: "<<date1;
-
-cout<<"creating date2"<<endl;
-TMDate date2;
-if(date1>date2) cout<<"111 date1>date2"<<endl;
-else cout<<"2222 date1<date2"<<endl;
-if(date1<date2) cout<<"3333 date1<date2"<<endl;
-else cout<<"4444 date1>date2"<<endl;
-if(date1==date2) cout<<"55555 date1==dat2"<<endl;
-else cout<<"6666 date1!=date2"<<endl;
-cout<<"date1 "<<date1<<endl;
-cout<<"date2 "<<date2<<endl;
-
-
-cout<<endl<<endl<<"......"<<endl;
-TMDate date3;
-date3=date1-date2;
-cout<<"date3 "<<date3<<endl;
-
-
-date3=date3+date1;
-cout<<"date3 "<<date3<<endl;
 
 cout<<"..... program ends"<<endl;
 return 0;
