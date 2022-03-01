@@ -25,7 +25,7 @@ void date();
 int getDayOfMonth();
 int getMonth();
 int getYear();
-// done
+
 int getDayOfWeeak();
 void getMonthString(char *);
 void getMonthShortString(char *);
@@ -46,6 +46,9 @@ int operator!=(const TMDate &);
 TMDate operator+(const TMDate &);
 TMDate operator-(const TMDate &);
 void operator=(const TMDate &);
+TMDate operator+(int days);
+TMDate operator-(int days);
+void operator=(const char *);
 };
 
 //.... constructor
@@ -90,7 +93,6 @@ this->year=other.year;
 }
 
 
-// done
 
 //... functions
 
@@ -237,7 +239,11 @@ cout<<getDayOfMonth()<<"/"<<getMonth()<<"/"<<getYear()<<endl;
 // done
 int TMDate::getDayOfWeeak()
 {
+int d=this->dayNumber;       //  1/1/1901 dayname was tuesday
+if(d==0) return 10;         //  Tue  Wed Thus Fri Sat Sun Mon
+return d%7;                //    1    2    3   4   5   6   7
 }
+
 void TMDate::getMonthString(char *monthString)
 {
 if(this->dayNumber==0)
@@ -282,12 +288,39 @@ else if(m==10) strcpy(monthShortString,"Oct");
 else if(m==11) strcpy(monthShortString,"Nov");
 else strcpy(monthShortString,"Dec");
 }
+// done
 void TMDate::getDayOfWeekString(char *dayOfWeekString)
 {
-
+int w=this->getDayOfWeeak();
+if(w==10) 
+{
+dayOfWeekString='\0';
+return;
+}
+if(w==1) strcpy(dayOfWeekString,"Tuesday");
+else if(w==2) strcpy(dayOfWeekString,"Wednesday");
+else if(w==3) strcpy(dayOfWeekString,"Thursday");
+else if(w==4) strcpy(dayOfWeekString,"Friday");
+else if(w==5) strcpy(dayOfWeekString,"Saturday");
+else if(w==6) strcpy(dayOfWeekString,"Sunday");
+else strcpy(dayOfWeekString,"Monday");
 }
 void TMDate::getDayOfWeekShortString(char *dayOfWeekShortString)
 {
+
+int w=this->getDayOfWeeak();
+if(w==10) 
+{
+dayOfWeekShortString='\0';
+return;
+}
+if(w==1) strcpy(dayOfWeekShortString,"Tue");
+else if(w==2) strcpy(dayOfWeekShortString,"Wed");
+else if(w==3) strcpy(dayOfWeekShortString,"Thur");
+else if(w==4) strcpy(dayOfWeekShortString,"Fri");
+else if(w==5) strcpy(dayOfWeekShortString,"Sat");
+else if(w==6) strcpy(dayOfWeekShortString,"Sun");
+else strcpy(dayOfWeekShortString,"Mon");
 
 }
 
@@ -377,6 +410,44 @@ this->month=other.month;
 this->year=other.year;
 }
 
+TMDate TMDate::operator+(int days)
+{
+if(days<=0) if(-days>this->dayNumber) days=this->dayNumber;
+TMDate k;
+k.dayNumber=this->dayNumber+days;
+k.fromDayNumber();
+return k;
+}
+TMDate TMDate::operator-(int days)
+{
+if(days>dayNumber) days=this->dayNumber;
+TMDate k;
+k.dayNumber=this->dayNumber-days;
+k.fromDayNumber();
+return k;
+}
+
+void TMDate::operator=(const char *dateString)
+{
+int isValid,d,m,y;
+isValidDate(dateString,&isValid,&d,&m,&y);
+if(isValid)
+{
+this->dayOfMonth=d;
+this->month=m;
+this->year=y;
+this->toDayNumber();
+}
+else 
+{
+this->dayOfMonth=0;
+this->month=0;
+this->year=0;
+this->dayNumber=0;
+}
+
+}
+
 
 ostream & operator<<(ostream &cout,TMDate &tmDate)
 {
@@ -386,35 +457,29 @@ return cout;
 
 int main()
 {
-TMDate date1("2/12/2002");
-cout<<date1;
-//date1.toDayNumber();
 
-cout<<"....."<<endl;
-date1+=5;
-cout<<"date 1: "<<date1;
+TMDate date1("28/3/1973");
+date1="22/08/2002";
+
+
 char m[16];
-date1.getMonthString(m);
-cout<<m<<endl;
 date1.getMonthShortString(m);
 cout<<m<<endl;
+cout<<"........."<<endl;
 
-date1="12/12/1901";
-cout<<date1;
-cout<<"...... test"<<endl;
-date1+=19;
+char w[16];
+date1.getDayOfWeekString(w);
+cout<<w<<endl;
+cout<<"........"<<endl;
+TMDate date2;
+date2=date1+10;
+cout<<date2<<endl;
 
-
-cout<<date1;
-date1+=1;
-cout<<date1<<endl;
-date1.getMonthString(m);
-cout<<m<<endl;
-date1.getMonthShortString(m);
-cout<<m<<endl;
-
+date2="18/5/1857";
+cout<<date2<<endl;
 
 
 cout<<"..... program ends"<<endl;
+
 return 0;
 }
