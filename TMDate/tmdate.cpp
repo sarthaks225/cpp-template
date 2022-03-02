@@ -1,5 +1,5 @@
-#include<iostream>
-#include<time.h>
+#include<iostream>   // funtions remained: date2=date1+"1month",date2=date1+"3 Year"
+#include<time.h>     // to validate date1="19/4/1756"
 #include<string.h>
 using namespace std;
 
