@@ -45,7 +45,7 @@ int operator==(const TMDate &);
 int operator!=(const TMDate &);
 TMDate operator+(const TMDate &);
 TMDate operator-(const TMDate &);
-void operator=(const TMDate &);
+TMDate & operator=(const TMDate &);
 TMDate operator+(int days);
 TMDate operator-(int days);
 void operator=(const char *);
@@ -402,12 +402,13 @@ else k.dayNumber=z;
 k.fromDayNumber();
 return k;
 }
-void TMDate::operator=(const TMDate &other)
+TMDate & TMDate::operator=(const TMDate &other)
 {
 this->dayNumber=other.dayNumber;
 this->dayOfMonth=other.dayOfMonth;
 this->month=other.month;
 this->year=other.year;
+return *this;
 }
 
 TMDate TMDate::operator+(int days)
